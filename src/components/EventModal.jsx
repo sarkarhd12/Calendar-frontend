@@ -675,7 +675,7 @@ export default function EventModal({ open, handleClose, event }) {
         try {
             await createEvent(newEvent);
             handleClose();
-            // window.location.reload(); // Refresh the page after submission
+             window.location.reload(); // Refresh the page after submission
         } catch (error) {
             console.error("Error creating event:", error);
             setError("An error occurred while creating the event. Please try again.");

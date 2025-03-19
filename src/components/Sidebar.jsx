@@ -187,15 +187,20 @@ export default function Sidebar({ selectedDate, onDateChange }) {
     
 
     const refreshEvents = async () => {
-        console.log("fetched events is here ",fetchEvents())
+       // console.log("fetched events is here ",fetchEvents())
         await fetchEvents();
     };
 
+
+    
+    
+    console.log("event me",eventMetadata)
+
     return (
         <div style={{ width: "100%", padding: "10px", borderRight: "1px solid #ddd", height: "100vh", overflowY: "auto" }}>
-            <Button variant="contained" fullWidth onClick={() => setModalOpen(true)}>
+            {/* <Button variant="contained" fullWidth onClick={() => setModalOpen(true)}>
                 + Create Event
-            </Button>
+            </Button> */}
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateCalendar 
@@ -221,6 +226,7 @@ export default function Sidebar({ selectedDate, onDateChange }) {
             </Typography>
             <List>
                 {eventMetadata.map((meta) => (
+                    
                     <ListItem key={meta.id} sx={{ borderBottom: "1px solid #eee", cursor: "pointer" }} 
                         onClick={() => handleEventClick(meta.id)}
                     >
@@ -232,7 +238,7 @@ export default function Sidebar({ selectedDate, onDateChange }) {
                 ))}
             </List>
 
-            <EventModal
+            {/* <EventModal
                 open={isModalOpen}
                 handleClose={() => setModalOpen(false)}
                 event={null}
@@ -241,7 +247,7 @@ export default function Sidebar({ selectedDate, onDateChange }) {
                     fetchEvents();
                     setModalOpen(false);
                 }}
-            />
+            /> */}
 
             <EventMetadataAction 
                 open={Boolean(selectedEvent)} 

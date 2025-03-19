@@ -7,9 +7,9 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(utc); // Enable UTC support
 dayjs.extend(timezone);
  
-const API_BASE_URL = "http://localhost:8080/events";
+  const API_BASE_URL = "http://localhost:8080/events";
 
-// const API_BASE_URL ="http://calendar-apis-env.eba-exxer2js.us-east-1.elasticbeanstalk.com/"
+ //const API_BASE_URL ="ec2-54-163-52-213.compute-1.amazonaws.com:8080/events"
 
 export default function useEvents() {
     const [events, setEvents] = useState([]);
@@ -35,7 +35,7 @@ export default function useEvents() {
             throw new Error(`HTTP error! Status: ${response.status}`);
           }
           const data = await response.json();
-        //   console.log("Fetched event metadata:", data);
+           console.log("Fetched event metadata:", data);
           setEventMetadata(data);
         } catch (error) {
           console.error("Error fetching events:", error.message);
@@ -69,7 +69,7 @@ export default function useEvents() {
                 const formattedDate = dayjs(date).format("YYYY-MM-DD");
              
         
-                const url = `http://localhost:8080/events/by-date/times?date=${formattedDate}`;
+                const url = `${API_BASE_URL}/by-date/times?date=${formattedDate}`;
         
                 const response = await axios.get(url);
 
@@ -148,7 +148,7 @@ export default function useEvents() {
         }
     };
 
-        // Update Event Metadata
+     //   Update Event Metadata
         const updateEventMetadata = async (id, updatedMetadata) => {
             try {
                 const response = await axios.put(`${API_BASE_URL}/update-metadata/${id}`, updatedMetadata);
@@ -156,6 +156,7 @@ export default function useEvents() {
                     prevEvents.map((event) => (event.id === id ? response.data : event))
                 );
                 fetchEvents();
+                
                 return response.data;
             } catch (err) {
                 console.error("Error updating event metadata:", err);
@@ -163,15 +164,36 @@ export default function useEvents() {
             }
         };
 
+       
+
+        // const deleteEventMetadata = async (id) => {
+        //     try {
+        //         await axios.delete(`${API_BASE_URL}/delete-metadata/${id}`);
+        //         console.log(`Event with ID ${id} deleted successfully.`);
+                
+        //         // 🔄 Fetch updated events from the backend after deletion
+        //         // fetchEvents();
+        //         // setTimeout(() => fetchEvents(), 300);  
+
+        //         await fetchEvents();
+        //     } catch (err) {
+        //         console.error("Error deleting event metadata:", err);
+        //     }
+        // };
+        
 
         const deleteEventMetadata = async (id) => {
             try {
+                // First API call
                 await axios.delete(`${API_BASE_URL}/delete-metadata/${id}`);
-                console.log(`Event with ID ${id} deleted successfully.`);
-                
-                // 🔄 Fetch updated events from the backend after deletion
-                // fetchEvents();
-                // setTimeout(() => fetchEvents(), 300);  
+                console.log(`First attempt: Event with ID ${id} deleted.`);
+        
+                // Second API call
+                await axios.delete(`${API_BASE_URL}/delete-metadata/${id}`);
+                console.log(`Second attempt: Event with ID ${id} deleted.`);
+        
+                // Fetch updated events after deletion
+                await fetchEvents();
             } catch (err) {
                 console.error("Error deleting event metadata:", err);
             }
